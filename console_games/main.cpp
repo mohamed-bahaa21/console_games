@@ -9,6 +9,10 @@ using namespace std;
 #define sleep(x) Sleep(x) // milli-seconds
 #endif
 
+#define NOMINMAX
+#define WIN32_LEAN_AND_MEAN
+#include <Windows.h>
+
 bool gameOver, pause;
 
 const int width = 30, height = 30;
@@ -19,7 +23,20 @@ int nTail;
 enum eDirection { STOP = 0, LEFT, RIGHT, UP, DOWN };
 eDirection dir;
 
+void setConsoleColor(unsigned short color)
+{
+	static const HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+	std::cout.flush();
+	SetConsoleTextAttribute(hOut, color);
+}
+
+const unsigned short DARK_BLUE = FOREGROUND_BLUE;
+const unsigned short BRIGHT_BLUE = FOREGROUND_BLUE | FOREGROUND_INTENSITY;
+
 void Setup() {
+	setConsoleColor(BRIGHT_BLUE);
+	//setConsoleColour(DARK_BLUE);
+
 	gameOver = false;
 	pause = false;
 	dir = STOP;
@@ -42,6 +59,9 @@ void drawSnake()
 
 void Draw() {
 	system("cls");
+	//cls();
+	
+	
 
 	for (int i = 0; i < world_width + 2; i++)
 		cout << "#";
@@ -85,6 +105,7 @@ void Draw() {
 	cout << endl;
 
 	cout << "Score: " << score << endl;
+	cout.flush();
 }
 
 void GameInput() {
