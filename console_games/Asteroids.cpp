@@ -55,7 +55,7 @@ protected:
 			player.angle += 5.0f * fElapsedTime;
 
 		// thrust
-		if (m_keys[VK_LEFT].bHeld)
+		if (m_keys[VK_UP].bHeld)
 		{
 			// acceleration changes velocity (with respect to time)
 			player.dx += sin(player.angle) * 20.0f * fElapsedTime;
@@ -81,35 +81,52 @@ protected:
 					Draw(a.x + x, a.y + y, PIXEL_QUARTER, FG_RED);
 		}
 
-		// draw ship
-		float mx[3] = { 0.0f, -2.5f, +2.5f };
-		float my[3] = { -5.5f, +2.5f, +2.5f };
 
-		float sx[3], sy[3];
+
+
+		return true;
+	}
+
+	void DrawWireFrameModel(const vector<pair<float, float>> &vecModelCoordinates, float x, float y, float r = 0.0f, float s = 1.0f, short color = FG_WHITE)
+	{
+		// pair.first = x coordinate
+		// pair.second = y coordinate
+
+		// Create translated model vector of coordinate pairs
+		vector<pair<float, float>> vecTransformedCoordinates;
+		int verts = vecModelCoordinates.size();
+		vecTransformedCoordinates.resize(verts);
 
 		// rotate 
 		for (int i = 0; i < 3; i++)
 		{
-			sx[i] = mx[i] * cosf(player.angle) - my[i] * sinf(player.angle);
-			sy[i] = mx[i] * sinf(player.angle) + my[i] * cosf(player.angle);
+			vecTransformedCoordinates[i].first = vecTransformedCoordinates[i].first * cosf(player.angle) - vecTransformedCoordinates[i].second * sinf(player.angle);
+			vecTransformedCoordinates[i].second = vecTransformedCoordinates[i].first * sinf(player.angle) + vecTransformedCoordinates[i].second * cosf(player.angle);
+		}
+
+		// scale
+		for (int i = 0; i < verts; i++)
+		{
+			vecTransformedCoordinates[i].first = vecTransformedCoordinates[i].first * s;
+			vecTransformedCoordinates[i].second = vecTransformedCoordinates[i].second * s;
 		}
 
 		// translate
 		for (int i = 0; i < 3; i++)
 		{
-			sx[i] = sx[i] + player.x;
-			sy[i] = sy[i] + player.y;
+			vecTransformedCoordinates[i].first = vecTransformedCoordinates[i].first + player.x;
+			vecTransformedCoordinates[i].second = vecTransformedCoordinates[i].second + player.y;
 		}
 
 		// draw closed polygon
-		for (int i = 0; i < 4; i++)
+		for (int i = 0; i < verts + 1; i++)
 		{
 			int j = (i + 1);
-			DrawLine(sx[i % 3], sy[i % 3], sx[j % 3], sy[j % 3]);
+			DrawLine(vecTransformedCoordinates[i % verts].first,
+				vecTransformedCoordinates[i % verts].second,
+				vecTransformedCoordinates[j % verts].first,
+				vecTransformedCoordinates[j % verts].second);
 		}
-
-
-		return true;
 	}
 
 
