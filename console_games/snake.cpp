@@ -237,7 +237,7 @@ void Logic() {
 	}
 }
 
-int main() {
+int snake() {
 
 	Setup();
 

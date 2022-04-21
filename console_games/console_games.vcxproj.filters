@@ -22,5 +22,8 @@
     <ClInclude Include="olcPixelGameEngine.h">
       <Filter>Resource Files</Filter>
     </ClInclude>
+    <ClInclude Include="olcConsoleGameEngine.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
