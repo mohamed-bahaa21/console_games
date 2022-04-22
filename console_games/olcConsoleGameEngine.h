@@ -474,7 +474,7 @@ public:
 		if (y >= m_nScreenHeight) y = m_nScreenHeight;
 	}
 
-	void DrawLine(int x1, int y1, int x2, int y2, short c = 0x2588, short col = 0x000F)
+	virtual void DrawLine(int x1, int y1, int x2, int y2, wchar_t c = 0x2588, short col = 0x000F)
 	{
 		int x, y, dx, dy, dx1, dy1, px, py, xe, ye, i;
 		dx = x2 - x1; dy = y2 - y1;
@@ -757,7 +757,7 @@ public:
 		}
 	}
 
-	void DrawWireFrameModel(const std::vector<std::pair<float, float>> &vecModelCoordinates, float x, float y, float r = 0.0f, float s = 1.0f, short col = FG_WHITE, short c = PIXEL_SOLID)
+	virtual void DrawWireFrameModel(const std::vector<std::pair<float, float>> &vecModelCoordinates, float x, float y, float r = 0.0f, float s = 1.0f, short col = FG_WHITE, short c = PIXEL_SOLID)
 	{
 		// pair.first = x coordinate
 		// pair.second = y coordinate

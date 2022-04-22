@@ -60,8 +60,8 @@ void drawSnake()
 void Draw() {
 	system("cls");
 	//cls();
-
-
+	
+	
 
 	for (int i = 0; i < world_width + 2; i++)
 		cout << "#";
@@ -237,7 +237,7 @@ void Logic() {
 	}
 }
 
-int main() {
+int snake() {
 
 	Setup();
 

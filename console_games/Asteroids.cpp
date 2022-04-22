@@ -28,6 +28,9 @@ private:
 	vector<sSpaceObject> vecAsteroids;
 	sSpaceObject player;
 
+	vector<pair<float, float>> vecModelShip;
+	vector<pair<float, float>> vecModelAsteroid;
+
 protected:
 	// called one at the start
 	virtual bool OnUserCreate()
@@ -39,6 +42,21 @@ protected:
 		player.y = ScreenHeight() / 2.0f;
 		player.dx = 0.0f;
 		player.angle = 0.0f;
+
+		vecModelShip =
+		{
+			{ 0.0f, -5.0f },
+			{ -2.5f, +2.5f},
+			{+2.5f, +2.5f}
+		}; // simple isoceles triangle
+
+		int verts = 20;
+		for (int i = 0; i < verts; i++)
+		{
+			float radius = 5.0f;
+			float a = ((float)i / (float)verts) * 6.28318f;
+			vecModelAsteroid.push_back(make_pair(radius * sinf(a), radius * cosf(a)));
+		}
 
 		return true;
 	}
@@ -72,22 +90,20 @@ protected:
 		// update and draw asteroids
 		for (auto &a : vecAsteroids)
 		{
-			a.x += a.dx *fElapsedTime;
-			a.y += a.dy *fElapsedTime;
+			a.x += a.dx * fElapsedTime;
+			a.y += a.dy * fElapsedTime;
 			WrapCoordinates(a.x, a.y, a.x, a.y);
 
-			for (int x = 0; x < a.nSize; x++)
-				for (int y = 0; y < a.nSize; y++)
-					Draw(a.x + x, a.y + y, PIXEL_QUARTER, FG_RED);
+			DrawWireFrameModel(vecModelAsteroid, a.x, a.y, a.angle, a.nSize);
 		}
 
-
-
+		// draw the ship
+		DrawWireFrameModel(vecModelShip, player.x, player.y, player.angle);
 
 		return true;
 	}
 
-	void DrawWireFrameModel(const vector<pair<float, float>> &vecModelCoordinates, float x, float y, float r = 0.0f, float s = 1.0f, short color = FG_WHITE)
+	void DrawWireFrameModel(const vector<pair<float, float>> &vecModelCoordinates, float x, float y, float r = 0.0f, float s = 1.0f, short col = FG_WHITE)
 	{
 		// pair.first = x coordinate
 		// pair.second = y coordinate
@@ -100,8 +116,8 @@ protected:
 		// rotate 
 		for (int i = 0; i < 3; i++)
 		{
-			vecTransformedCoordinates[i].first = vecTransformedCoordinates[i].first * cosf(player.angle) - vecTransformedCoordinates[i].second * sinf(player.angle);
-			vecTransformedCoordinates[i].second = vecTransformedCoordinates[i].first * sinf(player.angle) + vecTransformedCoordinates[i].second * cosf(player.angle);
+			vecTransformedCoordinates[i].first = vecTransformedCoordinates[i].first * cosf(r) - vecTransformedCoordinates[i].second * sinf(r);
+			vecTransformedCoordinates[i].second = vecTransformedCoordinates[i].first * sinf(r) + vecTransformedCoordinates[i].second * cosf(r);
 		}
 
 		// scale
@@ -114,8 +130,8 @@ protected:
 		// translate
 		for (int i = 0; i < 3; i++)
 		{
-			vecTransformedCoordinates[i].first = vecTransformedCoordinates[i].first + player.x;
-			vecTransformedCoordinates[i].second = vecTransformedCoordinates[i].second + player.y;
+			vecTransformedCoordinates[i].first = vecTransformedCoordinates[i].first + x;
+			vecTransformedCoordinates[i].second = vecTransformedCoordinates[i].second + y;
 		}
 
 		// draw closed polygon
@@ -125,7 +141,7 @@ protected:
 			DrawLine(vecTransformedCoordinates[i % verts].first,
 				vecTransformedCoordinates[i % verts].second,
 				vecTransformedCoordinates[j % verts].first,
-				vecTransformedCoordinates[j % verts].second);
+				vecTransformedCoordinates[j % verts].second, PIXEL_SOLID, col);
 		}
 	}
 
